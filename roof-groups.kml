@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+
+<Placemark>
+  <name>Group 1</name>
+  <Polygon>
+    <outerBoundaryIs>
+      <LinearRing>
+        <coordinates>
+          32.60445330632868,46.66959628139647,0 32.60445835155809,46.66959528960253,0
+        </coordinates>
+      </LinearRing>
+    </outerBoundaryIs>
+  </Polygon>
+</Placemark>
+
+
+<Placemark>
+  <name>Group 2</name>
+  <Polygon>
+    <outerBoundaryIs>
+      <LinearRing>
+        <coordinates>
+          32.53020542573754,46.5964811561638,0 32.53021046679412,46.59646493286188,0
+        </coordinates>
+      </LinearRing>
+    </outerBoundaryIs>
+  </Polygon>
+</Placemark>
+
+
+<Placemark>
+  <name>Group 3</name>
+  <Polygon>
+    <outerBoundaryIs>
+      <LinearRing>
+        <coordinates>
+          32.50406346348022,46.64094535701409,0 32.50406346348022,46.64094535701409,0
+        </coordinates>
+      </LinearRing>
+    </outerBoundaryIs>
+  </Polygon>
+</Placemark>
+
+</Document>
+</kml>
