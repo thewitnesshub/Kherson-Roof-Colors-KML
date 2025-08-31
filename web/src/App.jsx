@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { parseKml } from "./kmlUtils";
-import { loadKmlFiles } from "./kmlLoader";
+import { loadKmlFiles, loadKmlFile } from "./kmlLoader";
 import { findRoofGroups, groupsToKml } from "./roofGroups";
 
 function App() {
-  const [colorCounts, setColorCounts] = useState({ blue: 0, turquoise: 0 });
+  const [colorCounts, setColorCounts] = useState({ blue: 0, turquoise: 0, solar: 0 });
   const [radius, setRadius] = useState(50);
   const [resultKml, setResultKml] = useState(null);
   const [parsedRoofs, setParsedRoofs] = useState([]);
@@ -12,19 +12,18 @@ function App() {
 
   // Load and parse KMLs on mount
   useEffect(() => {
-    async function loadKmls() {
-      setLoading(true);
-      try {
-        const { blueKml, turquoiseKml } = await loadKmlFiles();
-        const blueRoofs = parseKml(blueKml).map(r => ({ ...r, color: "blue" }));
-        const turquoiseRoofs = parseKml(turquoiseKml).map(r => ({ ...r, color: "turquoise" }));
-        setParsedRoofs([...blueRoofs, ...turquoiseRoofs]);
-      } catch (e) {
-        setParsedRoofs([]);
-      }
+    Promise.all([
+      loadKmlFile('/Blue Kherson.kml'),
+      loadKmlFile('/Turquoise Kherson.kml'),
+      loadKmlFile('/Solar Panels.kml')
+    ]).then(([blueRoofs, turquoiseRoofs, solarRoofs]) => {
+      const allRoofs = [...blueRoofs, ...turquoiseRoofs, ...solarRoofs];
+      setParsedRoofs(allRoofs);
       setLoading(false);
-    }
-    loadKmls();
+    }).catch(error => {
+      console.error('Error loading KML files:', error);
+      setLoading(false);
+    });
   }, []);
 
   // Handle color count change
@@ -85,7 +84,7 @@ function App() {
         marginBottom: 24
       }}>
         <div style={{ marginBottom: 16 }}>
-          <strong style={{ color: "#2d3748" }}>KML files loaded: Blue & Turquoise</strong>
+          <strong style={{ color: "#2d3748" }}>KML files loaded: Blue, Turquoise/Green & Solar Panels</strong>
         </div>
         
         <div style={{ 
@@ -122,12 +121,34 @@ function App() {
               marginBottom: 4, 
               fontWeight: "500",
               color: "#2d3748"
-            }}>Turquoise roofs:</label>
+            }}>Turquoise/Green roofs:</label>
             <input 
               type="number" 
               min={0} 
               value={colorCounts.turquoise} 
               onChange={e => handleColorChange("turquoise", e.target.value)}
+              style={{
+                padding: "8px 12px",
+                border: "1px solid #d1d5db",
+                borderRadius: 6,
+                fontSize: "1rem",
+                width: 80
+              }}
+            />
+          </div>
+          
+          <div>
+            <label style={{ 
+              display: "block", 
+              marginBottom: 4, 
+              fontWeight: "500",
+              color: "#2d3748"
+            }}>Solar panels:</label>
+            <input 
+              type="number" 
+              min={0} 
+              value={colorCounts.solar} 
+              onChange={e => handleColorChange("solar", e.target.value)}
               style={{
                 padding: "8px 12px",
                 border: "1px solid #d1d5db",
@@ -205,7 +226,8 @@ function App() {
             color: "#4a5568"
           }}>
             Blue: {parsedRoofs.filter(r => r.color === "blue").length} | 
-            Turquoise: {parsedRoofs.filter(r => r.color === "turquoise").length}
+            Turquoise/Green: {parsedRoofs.filter(r => r.color === "turquoise").length} | 
+            Solar: {parsedRoofs.filter(r => r.color === "solar").length}
           </div>
         </div>
       )}

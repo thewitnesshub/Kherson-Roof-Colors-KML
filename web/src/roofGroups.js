@@ -55,14 +55,17 @@ export function findRoofGroups(roofs, colorCounts, radius) {
 // Generate KML polygon for a group
 export function groupToKmlPolygon(group, idx) {
   const coordsStr = group.map(r => `${r.coords.lon},${r.coords.lat},0`).join(" ");
+  // Close the polygon by adding the first coordinate at the end
+  const firstCoord = `${group[0].coords.lon},${group[0].coords.lat},0`;
   return `
 <Placemark>
-  <name>Group ${idx + 1}</name>
+  <name>Group ${idx + 1} Boundary</name>
+  <styleUrl>#polygonStyle</styleUrl>
   <Polygon>
     <outerBoundaryIs>
       <LinearRing>
         <coordinates>
-          ${coordsStr}
+          ${coordsStr} ${firstCoord}
         </coordinates>
       </LinearRing>
     </outerBoundaryIs>
@@ -73,5 +76,62 @@ export function groupToKmlPolygon(group, idx) {
 
 // Generate full KML
 export function groupsToKml(groups) {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n${groups.map(groupToKmlPolygon).join("\n")}\n</Document>\n</kml>`;
+  const styles = `
+<Style id="blueStyle">
+  <IconStyle>
+    <scale>1.2</scale>
+    <Icon>
+      <href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>
+    </Icon>
+  </IconStyle>
+</Style>
+<Style id="turquoiseStyle">
+  <IconStyle>
+    <scale>1.2</scale>
+    <Icon>
+      <href>http://maps.google.com/mapfiles/kml/pushpin/grn-pushpin.png</href>
+    </Icon>
+  </IconStyle>
+</Style>
+<Style id="solarStyle">
+  <IconStyle>
+    <scale>1.2</scale>
+    <Icon>
+      <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+    </Icon>
+  </IconStyle>
+</Style>
+<Style id="polygonStyle">
+  <PolyStyle>
+    <color>7f00ff00</color>
+    <outline>1</outline>
+  </PolyStyle>
+  <LineStyle>
+    <color>ff00ff00</color>
+    <width>2</width>
+  </LineStyle>
+</Style>`;
+  
+  const placemarksWithPoints = groups.map((group, idx) => {
+    const points = group.map((roof, roofIdx) => `
+<Placemark>
+  <name>${roof.color} roof ${roofIdx + 1} (Group ${idx + 1})</name>
+  <styleUrl>#${roof.color}Style</styleUrl>
+  <Point>
+    <coordinates>${roof.coords.lon},${roof.coords.lat},0</coordinates>
+  </Point>
+</Placemark>`).join('');
+    
+    const polygon = groupToKmlPolygon(group, idx);
+    return points + polygon;
+  }).join('\n');
+  
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<name>Roof Groups</name>
+${styles}
+${placemarksWithPoints}
+</Document>
+</kml>`;
 }

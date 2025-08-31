@@ -55,6 +55,10 @@ print("Extracting coordinates from Turquoise KML...")
 turquoise_coords = extract_coordinates_from_kml("Turquoise Kherson.kml")
 print(f"Found {len(turquoise_coords)} turquoise roof coordinates")
 
+print("Extracting coordinates from Solar Panels KML...")
+solar_coords = extract_coordinates_from_kml("Solar Panels.kml")
+print(f"Found {len(solar_coords)} solar panel coordinates")
+
 # Create fixed KML files with proper pushpin icons
 blue_count = create_styled_kml(
     blue_coords, 
@@ -72,7 +76,16 @@ turquoise_count = create_styled_kml(
     "Turquoise Kherson Fixed.kml"
 )
 
+solar_count = create_styled_kml(
+    solar_coords, 
+    "Solar Panels", 
+    "solarStyle", 
+    "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png",  # Using yellow for solar panels
+    "Solar Kherson Fixed.kml"
+)
+
 print(f"\nFixed KML files created!")
 print(f"Blue Kherson Fixed.kml - {blue_count} blue pushpins")
 print(f"Turquoise Kherson Fixed.kml - {turquoise_count} green pushpins (closest to turquoise)")
+print(f"Solar Kherson Fixed.kml - {solar_count} yellow pushpins")
 print("\nThese files should display with proper pushpin colors in both Google Earth Web and Pro!")

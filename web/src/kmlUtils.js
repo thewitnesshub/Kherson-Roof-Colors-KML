@@ -17,7 +17,8 @@ export function parseKml(kmlText) {
     // Guess color from name/desc
     let color = "unknown";
     if (/blue/i.test(name) || /blue/i.test(desc)) color = "blue";
-    else if (/turquoise/i.test(name) || /turquoise/i.test(desc)) color = "turquoise";
+    else if (/turquoise/i.test(name) || /turquoise/i.test(desc) || /green/i.test(name) || /green/i.test(desc)) color = "turquoise";
+    else if (/solar/i.test(name) || /solar/i.test(desc) || /panel/i.test(name) || /panel/i.test(desc)) color = "solar";
     else if (/red/i.test(name) || /red/i.test(desc)) color = "red";
     return { color, coords };
   }).filter(r => r.coords);
