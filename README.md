@@ -11,5 +11,5 @@ The files are created for **geolocation**.
 3. Open it in **Google Earth**, **QGIS**, or any KML-compatible tool to view the marked roofs.  
 
 ## Current Status
-- Only **blue roofs** are marked at this stage.  
+- Currently there are **blue roofs**, **turquoise/green** roofs and **solar panels**
 - Files are updated continuously as new roofs are added.  
